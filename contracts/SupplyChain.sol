@@ -144,7 +144,7 @@ contract SupplyChain {
   // 2. Change the state of the item to shipped. 
   // 3. call the event associated with this function!
   function shipItem(uint sku) public sold(sku) verifyCaller(items[sku].seller) {
-    items[sku].state == State.Shipped;
+    items[sku].state = State.Shipped;
     emit LogShipped(sku);
   }
 
@@ -153,18 +153,21 @@ contract SupplyChain {
   //    - the person calling this function is the buyer. 
   // 2. Change the state of the item to received. 
   // 3. Call the event associated with this function!
-  function receiveItem(uint sku) public {}
+  function receiveItem(uint sku) public shipped(sku) verifyCaller(items[sku].buyer){
+    items[sku].state = State.Received;
+    emit LogReceived(sku);
+  }
 
   // Uncomment the following code block. it is needed to run tests
-  /* function fetchItem(uint _sku) public view */ 
-  /*   returns (string memory name, uint sku, uint price, uint state, address seller, address buyer) */ 
-  /* { */
-  /*   name = items[_sku].name; */
-  /*   sku = items[_sku].sku; */
-  /*   price = items[_sku].price; */
-  /*   state = uint(items[_sku].state); */
-  /*   seller = items[_sku].seller; */
-  /*   buyer = items[_sku].buyer; */
-  /*   return (name, sku, price, state, seller, buyer); */
-  /* } */
+  function fetchItem(uint _sku) public view  
+     returns (string memory name, uint sku, uint price, uint state, address seller, address buyer)  
+    { 
+     name = items[_sku].name; 
+     sku = items[_sku].sku; 
+     price = items[_sku].price; 
+     state = uint(items[_sku].state); 
+     seller = items[_sku].seller; 
+     buyer = items[_sku].buyer; 
+     return (name, sku, price, state, seller, buyer); 
+   } 
 }
